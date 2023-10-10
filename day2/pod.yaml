@@ -1,0 +1,17 @@
+apiVersion: v1 # versão da API do Kubernetes
+kind: Pod # tipo do objeto que estamos criando
+metadata: # metadados do Pod
+  creationTimestamp: null
+  labels: # labels do Pod
+    run: giropops # label run com o valor giropops
+  name: giropops # nome do Pod que estamos criando
+spec: # especificação do Pod
+  containers: # containers que estão dentro do Pod
+  - image: nginx # imagem do container
+    name: giropops # nome do container
+    ports: # portas que estão sendo expostas pelo container
+      - containerPort: 80 # porta 80 exposta pelo container
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-deployment
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+        - image: nginx:1.19.2
+          name: nginx
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 256Mi
+            requests:
+              cpu: "0.25"
+              memory: 128Mi
+          livenessProbe: # Aqui é onde vamos adicionar a nossa livenessProbe
+            httpGet: # Aqui vamos utilizar o httpGet, onde vamos se conectar ao container através do protocolo HTTP
+              path: /giropops # Qual o endpoint que vamos utilizar para se conectar ao container
+              port: 80 # Qual porta TCP vamos utilizar para se conectar ao container
+            initialDelaySeconds: 10 # Quantos segundos vamos esperar para executar a primeira verificação
+            periodSeconds: 10 # A cada quantos segundos vamos executar a verificação
+            timeoutSeconds: 5 # Quantos segundos vamos esperar para considerar que a verificação falhou
+            failureThreshold: 3 # Quantos falhas consecutivas vamos aceitar antes de reiniciar o container
+
+
+# ========================================
+
+# O que declaramos com a regra acima é que queremos testar se o Pod está respondendo através do protocolo TCP, 
+# através da opção tcpSocket, na porta 80 que foi definida pela opção port. E também definimos que queremos 
+# esperar 10 segundos para executar a primeira verificação utilizando initialDelaySeconds 
+# e por conta da periodSecondsfalamos que queremos que a cada 10 segundos seja realizada a verificação. 
+# Caso a verificação falhe, vamos esperar 5 segundos, por conta da timeoutSeconds, para tentar novamente, e 
+# como utilizamos o failureThreshold, se falhar mais 3 vezes, vamos reiniciar o Pod.
