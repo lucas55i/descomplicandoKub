@@ -17,12 +17,26 @@ spec:
         app: nginx-deployment
     spec:
       containers:
-      - image: nginx:1.19.2
-        name: nginx
-        resources:
-          limits:
-            cpu: "0.5"
-            memory: 256Mi
-          requests:
-            cpu: "0.25"
-            memory: 128Mi
+        - image: nginx:1.19.2
+          name: nginx
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 256Mi
+            requests:
+              cpu: "0.25"
+              memory: 128Mi
+          livenessProbe: # Aqui é onde vamos adicionar a nossa livenessProbe
+            httpGet: # Aqui vamos utilizar o httpGet, onde vamos se conectar ao container através do protocolo HTTP
+              path: / # Qual o endpoint que vamos utilizar para se conectar ao container
+              port: 80 # Qual porta TCP vamos utilizar para se conectar ao container
+            initialDelaySeconds: 10 # Quantos segundos vamos esperar para executar a primeira verificação
+            periodSeconds: 10 # A cada quantos segundos vamos executar a verificação
+            timeoutSeconds: 5 # Quantos segundos vamos esperar para considerar que a verificação falhou
+            failureThreshold: 3 # Quantos falhas consecutivas vamos aceitar antes de reiniciar o container
+
+# ===============================
+# Perceba que agora somente mudamos algumas coisas, apesar de seguir com o mesmo objetivo, que é verificar se o Nginx está respondendo corretamente, mudamos como iremos 
+# testar isso. Agora estamos utilizando o httpGet para testar se o Nginx está respondendo corretamente através do protocolo HTTP, e para isso, estamos utilizando o endpoint / e a porta 80.
+# O que temos de novo aqui é a opção path, que é o endpoint que vamos utilizar para testar se o Nginx está respondendo corretamente, e claro, 
+# a httpGet é a forma como iremos realizar o nosso teste, através do protocolo HTTP.
