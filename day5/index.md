@@ -1,0 +1,1 @@
+# Insatruções sobre instalar o kubeadm em uma instancia ec2
